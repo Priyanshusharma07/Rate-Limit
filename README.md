@@ -1,98 +1,245 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+#  Rate-Limited API Service (NestJS + Redis)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+##  Overview
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This project implements a **rate-limited API service** using **NestJS** and **Redis**.
+It ensures that each user can make a maximum of **5 requests per minute**, even under concurrent traffic.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+##  Features
 
-## Project setup
+*  Rate-limited endpoint (`POST /user/request`)
+*  Per-user request tracking
+*  Redis-based atomic operations (handles concurrency)
+*  Real-time stats (`GET /user/stats`)
+*  Swagger API documentation
+*  Retry mechanism (`retry_after`)
+*  Scalable design using Redis
 
-```bash
-$ npm install
-```
+---
 
-## Compile and run the project
+##  Tech Stack
+
+* Backend: NestJS
+* Cache/Rate Limiting: Redis (ioredis)
+* API Docs: Swagger
+
+---
+
+## Getting Started
+
+### 1. Clone the repository
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone https://github.com/your-username/rate-limited-api.git
+cd rate-limited-api
 ```
 
-## Run tests
+### 2. Install dependencies
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 3. Start Redis (locally)
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+docker run -p 6379:6379 redis
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 4. Run the application
 
-## Resources
+```bash
+npm run start:dev
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### 5. Open Swagger
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+http://localhost:3000/api
+```
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+##  API Endpoints
 
-## Stay in touch
+### 🔹 POST `/user/request`
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+**Description:** Send a request with rate limiting (max 5/min per user)
 
-## License
+#### Request Body
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```json
+{
+  "user_id": "user-123",
+  "payload": { "message": "hello" }
+}
+```
+
+#### Success Response
+
+```json
+{
+  "success": true,
+  "remaining": 3,
+  "data": { "message": "hello" }
+}
+```
+
+#### Rate Limit Exceeded
+
+```json
+{
+  "statusCode": 429,
+  "message": "Rate limit exceeded",
+  "retry_after": 42
+}
+```
+
+---
+
+### 🔹 GET `/user/stats`
+
+**Description:** Returns per-user request statistics
+
+#### Response
+
+```json
+{
+  "user-123": {
+    "requests_last_minute": 3,
+    "window_expires_in_seconds": 40
+  }
+}
+```
+
+---
+
+##  Design Decisions
+
+### 🔹 Rate Limiting Strategy
+
+* Used **Redis `INCR` + `EXPIRE`**
+* Ensures:
+
+  * Atomic operations
+  * Correct behavior under concurrent requests
+
+### 🔹 Concurrency Handling
+
+* Redis `INCR` is atomic → prevents race conditions
+* TTL is applied on each request → ensures consistency
+
+### 🔹 Stats Tracking
+
+* Active users tracked using Redis Set (`rate_limit_users`)
+* Inactive users cleaned automatically
+
+---
+
+##  Future Improvements
+
+### 🔹 1. Database Integration (Supabase)
+
+* Store user request history in **Supabase**
+* Enable:
+
+  * Analytics
+  * Historical tracking
+  * Audit logs
+
+---
+
+### 🔹 2. CI/CD Pipeline
+
+* Automate build, test, and deployment
+* Tools:
+
+  * GitHub Actions
+  * Docker pipelines
+* Ensure faster and safer releases
+
+---
+
+### 🔹 3. Queue-Based Request Handling
+
+* Use queue system (e.g., BullMQ)
+* Instead of rejecting:
+
+  * Queue excessive requests
+  * Process them later
+* Improves user experience under heavy load
+
+---
+
+### 🔹 4. Token-Based Rate Limiting
+
+* Introduce API tokens per user
+* Add **TTL for tokens**
+* Prevent:
+
+  * Unauthorized access
+  * Unnecessary/spam requests
+
+---
+
+### 🔹 5. Advanced Rate Limiting (Sliding Window)
+
+* Replace fixed window with:
+
+  * Redis ZSET (sliding window)
+* Benefits:
+
+  * More accurate control
+  * Prevent burst traffic issues
+
+---
+
+### 🔹 6. Request Flow Optimization
+
+* Add middleware/guards for rate limiting
+* Role-based limits (Admin vs User)
+* Dynamic limits based on subscription plans
+* Distributed rate limiting across microservices
+
+---
+
+##  Testing
+
+You can test APIs via:
+
+* Swagger UI
+* Postman
+* Curl
+
+---
+
+##  Project Structure
+
+```
+src/
+  user/
+    user.controller.ts
+    user.service.ts
+  redis/
+    redis.service.ts
+main.ts
+```
+
+---
+
+##  Conclusion
+
+This project demonstrates:
+
+* Scalable rate limiting using Redis
+* Handling concurrent requests safely
+* Clean backend architecture with NestJS
+
+---
+
+##  Author
+
+Developed as part of backend assignment By Priyanshu sharma
+Focused on scalability, concurrency, and production readiness
